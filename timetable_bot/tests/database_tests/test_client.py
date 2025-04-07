@@ -23,17 +23,11 @@ async def setup_container(request: pytest.FixtureRequest):
         mongo.stop()
 
     request.addfinalizer(remove_container)
-    mongo_client.connect_to_mongo_collection(mongo.username,
-                                             mongo.password,
-                                             mongo.get_container_host_ip(),
-                                             mongo.get_exposed_port(mongo.port),
-                                             mongo.dbname,
-                                             collection_name,
-                                             loop)
     uri = (f'mongodb://{mongo.username}:{mongo.password}@'
            f'{mongo.get_container_host_ip()}:{mongo.get_exposed_port(mongo.port)}')
     client: motor_asyncio.AsyncIOMotorClient = motor_asyncio.AsyncIOMotorClient(uri, io_loop=loop)
     collection = client[mongo.dbname][collection_name]
+    mongo_client.users = collection
 
 
 @pytest_asyncio.fixture(loop_scope='module', autouse=True)
