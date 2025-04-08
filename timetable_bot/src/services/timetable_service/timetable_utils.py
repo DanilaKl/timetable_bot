@@ -1,3 +1,43 @@
+from queue import PriorityQueue
+
+
+def find_timetable_intersections(timetables: list[list[tuple]]) -> list[tuple]:
+    if not timetables:
+        raise ValueError("timetables must have at least one timetable")
+
+    people_iters = [iter(timetable) for timetable in timetables]
+    event_queue: PriorityQueue = PriorityQueue()
+
+    # Initialize queue
+    for i in range(len(timetables)):
+        start, stop = next(people_iters[i])
+        event_queue.put((start, i, True))
+        event_queue.put((stop, i, False))
+
+    result = []
+
+    intersect_start = 0
+    person_counter = 0
+    while not event_queue.empty():
+        num, ind, is_start = event_queue.get()
+        if is_start:
+            intersect_start = max(num, intersect_start)
+            person_counter += 1  # the intervals of one person cannot overlap
+        else:
+            try:
+                start, stop = next(people_iters[ind])
+                event_queue.put((start, ind, True))
+                event_queue.put((stop, ind, False))
+            except StopIteration:
+                pass
+
+            if intersect_start < num and person_counter == len(timetables):
+                result.append((intersect_start, num))
+            person_counter -= 1
+
+    return result
+
+
 def _merge_intervals(intervals1: list[tuple], intervals2: list[tuple]) -> list[tuple]:
     """merge two sorted lists of intervals"""
     if not intervals1:
