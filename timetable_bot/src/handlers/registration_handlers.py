@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 import services.timetable_service as tt_service
+import services.prettify_print_service as pp_service
 
 from keyboards.registration_keys import render_reg_form
 from validators.time_validator import validate_intervals
@@ -26,7 +27,7 @@ async def start_registration(message: Message, state: FSMContext) -> None:
         'adds': [],
         'rems': []})
     await message.answer(
-        f'Заполните интервалы свободного времени.\n[{0}]:',
+        f'Заполните интервалы свободного времени.\n[{pp_service.prettify_week_day(0)}]:',
         reply_markup=render_reg_form()
     )
 
@@ -38,8 +39,9 @@ async def goto_next_week_day(callback: CallbackQuery, state: FSMContext) -> None
     data['week'] = (data['week'] + 1) % 7
     await state.set_data(data=data)
     if callback.message:
+        week_day = pp_service.prettify_week_day(data["week"])
         await callback.message.answer(
-            f'Заполните интервалы свободного времени.\n[{data["week"]}]:',
+            f'Заполните интервалы свободного времени.\n[{week_day}]:',
             reply_markup=render_reg_form()
         )
 
@@ -51,8 +53,9 @@ async def goto_prev_week_day(callback: CallbackQuery, state: FSMContext) -> None
     data['week'] = (data['week'] - 1) % 7
     await state.set_data(data=data)
     if callback.message:
+        week_day = pp_service.prettify_week_day(data["week"])
         await callback.message.answer(
-            f'Заполните интервалы свободного времени.\n[{data["week"]}]:',
+            f'Заполните интервалы свободного времени.\n[{week_day}]:',
             reply_markup=render_reg_form()
         )
 
