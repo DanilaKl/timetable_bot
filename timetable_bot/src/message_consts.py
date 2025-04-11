@@ -1,0 +1,7 @@
+MONDAY = 'Понедельник'
+TUESDAY = 'Вторник'
+WEDNESDAY = 'Среда'
+THURSTDAY = 'Четверг'
+FRIDAY = 'Пятница'
+SATURDAY = 'Суббота'
+SUNDAY = 'Воскресенье'
