@@ -1,5 +1,6 @@
 *.env
 *.bat
+.venv
 
 
 __pycache__
