@@ -9,11 +9,12 @@ from config import TOKEN
 from handlers import command_handlers
 from handlers import registration_handlers
 from keyboards import menu_keys
+from databases import redis_client
 
 
 async def main() -> None:
     bot = Bot(TOKEN)
-    dp = Dispatcher()
+    dp = Dispatcher(storage=redis_client.get_storage())
 
     dp.include_router(registration_handlers.router)
     dp.include_router(command_handlers.router)
