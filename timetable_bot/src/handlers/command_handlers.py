@@ -5,6 +5,9 @@ from aiogram.types import Message
 from services import timetable_service as tt_service
 from services import prettify_print_service as pp_service
 
+from message_consts import HELP_MSG
+
+
 router = Router()
 
 
@@ -35,6 +38,11 @@ async def get_meeting(message: Message, command: CommandObject) -> None:
                 f'показано ваше расписание: {pp_service.prettify_timetable(timetable)}')
 
     await message.answer(text=text)
+
+
+@router.message(Command(commands=['help']))
+async def help(message: Message, command: CommandObject) -> None:
+    await message.answer(text=HELP_MSG)
 
 
 @router.message(CommandStart)

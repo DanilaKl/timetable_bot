@@ -3,10 +3,12 @@ import logging
 import sys
 
 from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommandScopeDefault
 
 from config import TOKEN
 from handlers import command_handlers
 from handlers import registration_handlers
+from keyboards import menu_keys
 
 
 async def main() -> None:
@@ -15,6 +17,8 @@ async def main() -> None:
 
     dp.include_router(registration_handlers.router)
     dp.include_router(command_handlers.router)
+
+    await bot.set_my_commands(menu_keys.render_menu(), BotCommandScopeDefault())
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
