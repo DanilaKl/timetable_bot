@@ -27,7 +27,7 @@
 - запустить docker
 - собрать docer-compose файл:
     ```
-    docker compose -f 'git_tg_bot\docker-compose.yml' up -d --build 
+    docker compose -f 'docker-compose.yml' up -d --build 
     ```
 - запустить main
 
