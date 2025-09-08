@@ -20,6 +20,9 @@ jobs:
           target: "/home/${{ secrets.SSH_USER }}/botapp"
           overwrite: true
           rm: false
+          exclude: |
+            .git/
+            .github/
 
       - name: Rebuild & restart via SSH
         uses: appleboy/ssh-action@v1.2.1
