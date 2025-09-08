@@ -1,6 +1,9 @@
 on:
-  push:
-    branches: [ "master" ]
+  pull_request_review:
+    branches: 
+      - master
+    types:
+      - submitted
 
 jobs:
   deploy:
