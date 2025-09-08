@@ -10,9 +10,8 @@ requires-python = ">=3.13,<4.0"
 dependencies = [
     "aiogram (>=3.18.0,<4.0.0)",
     "dotenv (>=0.9.9,<0.10.0)",
-    "pytest (>=8.3.5,<9.0.0)",
-    "pytest-cov (>=6.0.0,<7.0.0)",
     "motor (>=3.7.0,<4.0.0)",
+    "redis (>=6.2.0,<7.0.0)",
 ]
 
 
@@ -22,12 +21,17 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.mypy-timetable_bot.tests]
+[[tool.mypy.overrides]]
+module = ["testcontainers.*"]
+follow_untyped_imports = true
 ignore_missing_imports = true
 
 
 [tool.pytest.ini_options]
 pythonpath = ["timetable_bot/src"]
 testpaths = ["timetable_bot/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 
 [tool.coverage.run]
@@ -45,3 +49,10 @@ omit = [
 
 [tool.coverage.html]
 directory = "coverage_reports/html/"
+
+[tool.poetry.group.dev.dependencies]
+pytest-cov = "^6.3.0"
+testcontainers = {extras = ["mongodb"], version = "^4.12.0"}
+pytest-asyncio = "^1.1.0"
+pytest = "^8.4.2"
+

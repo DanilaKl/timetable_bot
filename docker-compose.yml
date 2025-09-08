@@ -1,0 +1,60 @@
+
+services:
+  tt_bot:
+    build: .
+    env_file: timetable_bot/src/.env
+    depends_on:
+      - tt_bot_mongodb
+      - tt_bot_redis
+    restart: unless-stopped
+
+  tt_bot_mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    env_file: ./mongo_credentials.env
+    environment:
+      MONGO_INITDB_DATABASE: ttb_mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - tt_bot_mongodb_volume:/data/db
+    networks:
+      - tt_bot_mongo_network
+
+  tt_bot_mongo-express:
+    container_name: mongo-express
+    image: mongo-express:latest
+    depends_on:
+      - tt_bot_mongodb
+    env_file: 
+      - ./mongo_express_credentials.env
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    ports:
+      - '8081:8081'
+    networks:
+      - tt_bot_mongo_network
+  
+  tt_bot_redis:
+    container_name: aiogram_redis
+    image: redis:7.2-alpine
+    env_file: 
+      - ./redis_credentials.env
+    ports:
+      - "6379:6379"
+    volumes:
+      - tt_bot_redis_volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  tt_bot_mongodb_volume:
+  tt_bot_redis_volume:
+
+networks:
+  tt_bot_mongo_network:
+    driver: bridge
