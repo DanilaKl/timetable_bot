@@ -1,0 +1,34 @@
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload sources to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "."
+          target: "/home/${{ secrets.SSH_USER }}/botapp"
+          overwrite: true
+          rm: true
+
+      - name: Rebuild & restart via SSH
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            cd ~/botapp
+            docker compose down || true
+            docker compose up -d --build --pull=always
+            docker image prune -f
