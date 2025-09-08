@@ -1,5 +1,13 @@
 
 services:
+  tt_bot:
+    build: .
+    env_file: timetable_bot/src/.env
+    depends_on:
+      - tt_bot_mongodb
+      - tt_bot_redis
+    restart: unless-stopped
+
   tt_bot_mongodb:
     container_name: mongodb
     image: mongo:latest
