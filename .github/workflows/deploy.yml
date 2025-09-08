@@ -19,7 +19,7 @@ jobs:
           source: "."
           target: "/home/${{ secrets.SSH_USER }}/botapp"
           overwrite: true
-          rm: true
+          rm: false
 
       - name: Rebuild & restart via SSH
         uses: appleboy/ssh-action@v1.2.1
