@@ -19,10 +19,7 @@ jobs:
           source: "."
           target: "/home/${{ secrets.SSH_USER }}/botapp"
           overwrite: true
-          rm: false
-          exclude: |
-            .git/
-            .github/
+          rm: true
 
       - name: Rebuild & restart via SSH
         uses: appleboy/ssh-action@v1.2.1
@@ -32,6 +29,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             set -e
+            cp ~/sec/* ~/botapp
             cd ~/botapp
             docker compose down || true
             docker compose up -d --build --pull=always
